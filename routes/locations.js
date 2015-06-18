@@ -28,9 +28,14 @@ router.get('/:type?', function (req, res, next) {
   console.log('api', api);
 
   request(api, function (error, response, requested) {
-    var json = JSON.parse(requested);
 
-    res.json(json);
+    if (requested[0] == '<') {
+      res.json({error: true});
+    } else {
+      var json = JSON.parse(requested);
+
+      res.json(json);
+    }
   });
 });
 
