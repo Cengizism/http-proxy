@@ -13,7 +13,7 @@ router.get('/:type?', function (req, res, next) {
 
   if (req.params.type) {
     api += '/' + req.params.type;
-    console.log('there is a type param available: ', req.params.type, api);
+    // console.log('there is a type param available: ', req.params.type, api);
   }
 
   var url_parts = url.parse(req.url, true);
@@ -25,16 +25,18 @@ router.get('/:type?', function (req, res, next) {
     api += '&max=' + query.max;
   }
 
-  console.log('api', api);
+  // console.log('api', api);
 
   request(api, function (error, response, requested) {
+    // console.log('res', response.statusCode, response.body);
 
-    if (requested[0] == '<') {
-      res.json({error: true});
-    } else {
+    if (response.statusCode == 404) {
+      res.json({notFound: true});
+    } else if (response.statusCode == 200) {
       var json = JSON.parse(requested);
-
       res.json(json);
+    } else {
+      res.json({error: true});
     }
   });
 });
